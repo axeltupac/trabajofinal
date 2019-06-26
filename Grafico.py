@@ -9,26 +9,25 @@ from pattern.es import conjugate, attributive, parse, split, INFINITIVE, NEUTRAL
 BOX_SIZE = 25
 
 
-def definirColor(cantUbicaciones):
-    """Recibe como parametro la cantidad total de las ubicaciones y calcula el promedio de temperaturas de una ubicacion al azar.
+def definirColor(numofi):
+    """Recibe como parametro la ubicacion y calcula el promedio de temperaturas de la ubicacion
     Retorna el color de la interfaz dependiendo de la temperatura promedio."""
     try:
-        ubicacion = random.choice(range(0, cantUbicaciones))
-        archivoTemperaturas = open('temperatura_' + str(ubicacion) + '.json', 'r')
+        archivoTemperaturas = open('temperatura_' + numofi + '.json', 'r')
         lista_temperaturas = json.load(archivoTemperaturas)
-
         cantTotal = 0
         cantTemperatura = 0
         for dic in lista_temperaturas:
             cantTemperatura = cantTemperatura + dic['temperatura']
-            cantTotal = cantTotal + 1
-
-        if ((cantTemperatura / cantTotal) < 15):
-            return 'blue'
+            cantTotal += 1
+        if (cantTemperatura / cantTotal) < 15:
+            return '#a6e0f8'
         else:
-            return 'red'
+            return '#ab241c'
     except:
-        return 'blue'
+        return '#4cb15b'
+
+
 def ayudaa(listap, defis):
     """esta funcion se encarga de devolver todas las definiciones de las palabras para luego ser utilizadas en la ayuda"""
     def buscardef(palabra, defi):
@@ -287,7 +286,6 @@ def Seleccionar(coordenadas, tuplaClave):
 
 
 def verificarPalabras(coordenadas, dicSeleccion):
-    """Esta funcion es para verificar si la palabra ya fue encontrada en la sopa de letras"""
     listaEliminacion = []
     auxstr = ""
     for clases in dicSeleccion.keys():
@@ -313,7 +311,6 @@ def verificarPalabras(coordenadas, dicSeleccion):
 
 
 def ganarJuego(dicSeleccion):
-    """Esta funcion sirve para verificar cuando se gana el juego"""
     palabrasFaltantes = 0
     for clases in dicSeleccion.keys():
         for lista in dicSeleccion[clases]['palabras']:
@@ -323,7 +320,6 @@ def ganarJuego(dicSeleccion):
 
 
 def buscarDefinicion(palabra):
-    """Esta funcion sirve para encontrar la definicion de la palabra"""
     try:
         articulo = Wiktionary(language="es").search(palabra)
         for elemento in articulo.sections:
@@ -363,12 +359,12 @@ while True:
 
             while True:
                 eventos, val = windowJugar.Read()
+
                 if eventos is None:
                     break
                 elif eventos == 'fuera':
                     windowJugar.Hide()
                     break
-
                 elif eventos == 'jugando':
                     ayuda = diccionario['ayuda']
                     palabras = list(diccionario['clases']['VB'].keys()) + list(
@@ -387,10 +383,16 @@ while True:
                                        'color': windowJugar.FindElement('auxVerbos').Get()}}
                         doblepalabras = (conf['NN']['cantidad'] + conf['JJ']['cantidad'] + conf['VB']['cantidad'])*2
                         X, Y = doblepalabras * (BOX_SIZE+1), palabraMasLarga * (BOX_SIZE+1)
-                        visi = True
+                        visi = ayuda
                         if diccionario["orientacion"] == "horizontal":
                             X, Y = Y, X
                         tuplatam = (X, Y)
+                        for i in range(1, 11):
+                            booleanofi = val[str(i)]
+                            if booleanofi:
+                                numofi = str(i)
+                                break
+                        colorofi = definirColor(numofi)
                         if (conf['NN']['cantidad'] == 0 and conf['JJ']['cantidad'] == 0 and conf['VB'][
                             'cantidad'] == 0):
                             sg.Popup('Debe existir al menos una palabra para buscar en la sopa de letras.')
@@ -398,10 +400,10 @@ while True:
                             if diccionario['orientacion'] == 'vertical':
                                 windowJugando = sg.Window('Sopa de letras', size=(1300, 600), location=(0, 0)).Layout(
                                     leiauts.Jugando(sg, cantidadDeFilas, palabraMasLarga, diccionario['clases'], conf,
-                                                    [], tuplatam, visi)).Finalize()
+                                                    [], tuplatam, visi, colorofi)).Finalize()
                             else:
                                 windowJugando = sg.Window('Sopa de letras', size=(1300, 600), location=(0, 0)).Layout(
-                                    leiauts.Jugando(sg, palabraMasLarga, cantidadDeFilas, diccionario['clases'], conf, [], tuplatam, visi)).Finalize()
+                                    leiauts.Jugando(sg, palabraMasLarga, cantidadDeFilas, diccionario['clases'], conf, [], tuplatam, visi, colorofi)).Finalize()
                             g = windowJugando.FindElement('_GRAPH_')
                             coordenadas = {}
                             dicSeleccion = {
@@ -487,8 +489,7 @@ while True:
                                     else:
                                         sg.Popup('La ayuda se encuentra deshabilitada.')
                     else:
-                        sg.Popup(
-                            'No hay ninguna palabra en la sopa de letras, configurala desde el boton "Configuracion"')
+                        sg.Popup('No hay ninguna palabra en la sopa de letras, configurala desde el boton "Configuracion"')
         except (FileNotFoundError):
             sg.Popup('No se ha configurado la sopa de letras. Por favor, hagalo clickeando el boton "Configuracion"')
 
@@ -517,7 +518,7 @@ while True:
 
             if e is None:
                 break
-            if e == 'volver':
+            if e == 'volver' or e=='guardar':
                 windowConfig.Hide()
                 break
             elif e == 'cargar':

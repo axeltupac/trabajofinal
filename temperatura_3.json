@@ -1,0 +1,6 @@
+ {'temperatura': 376, 'humedad': humedad, 'fecha': time.asctime(time.localtime(time.time()))}
+ {'temperatura': 475, 'humedad': humedad, 'fecha': time.asctime(time.localtime(time.time()))}
+ {'temperatura': 162, 'humedad': humedad, 'fecha': time.asctime(time.localtime(time.time()))}
+ {'temperatura': 41, 'humedad': humedad, 'fecha': time.asctime(time.localtime(time.time()))}
+ {'temperatura': 23, 'humedad': humedad, 'fecha': time.asctime(time.localtime(time.time()))}
+ {'temperatura': 15, 'humedad': humedad, 'fecha': time.asctime(time.localtime(time.time()))}

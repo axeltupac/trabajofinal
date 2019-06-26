@@ -39,7 +39,7 @@ def Jugar(sg, diccionario):
     canS = 'La cantidad maxima de sustantivos posibles es:' + str(len(list(diccionario['NN'].keys())))
     canA = 'La cantidad maxima de adjetivos posibles es:' + str(len(list(diccionario['JJ'].keys())))
     canV = 'La cantidad maxima de verbos posibles es:' + str(len(list(diccionario['VB'].keys())))
-    wjugar = [[sg.Text('Sopa de letras'), background_color=colorInterfaz, sg.Text('', key='_OUTPUT_')],
+    wjugar = [[sg.Text('Sopa de letras'), sg.Text('', key='_OUTPUT_')],
               [sg.Frame('Defina los colores', layout=[
                   [sg.Txt('Sustantivos'), sg.ColorChooserButton('Seleccionar', target=(0, 2), key='ColorSustantivos'),
                    sg.InputText('#ffff80', key='auxSustantivos', visible=False)],
@@ -58,24 +58,28 @@ def Jugar(sg, diccionario):
                     sg.InputText(str(len(list(diccionario['JJ'].keys()))), key='cantAdjetivos', size=(10, 1)),
                     sg.Txt(canA)]])],
               [sg.Txt('')],
-              [sg.ReadButton('Jugar', key='jugando'), sg.ReadButton('Salir', key='fuera')]]
+              [sg.ReadButton('Jugar', key='jugando'), sg.ReadButton('Salir', key='fuera'), sg.Frame('¿En que oficina estás?', layout=[
+                    [sg.Radio('Oficina 1', "RADIO1", default=True, key='1'), sg.Radio('Oficina 2', "RADIO1", enable_events=True, key='2'), sg.Radio('Oficina 3', "RADIO1", enable_events=True, key='3'),
+                    sg.Radio('Oficina 4', "RADIO1", enable_events=True, key='4'), sg.Radio('Oficina 5', "RADIO1", enable_events=True, key='5')], [sg.Radio('Oficina 6', "RADIO1", enable_events=True, key='6'),
+                    sg.Radio('Oficina 7', "RADIO1", enable_events=True, key='7'), sg.Radio('Oficina 8', "RADIO1", enable_events=True, key='8'), sg.Radio('Oficina 9', "RADIO1", enable_events=True, key='9'),
+                    sg.Radio('Oficina 10', "RADIO1", enable_events=True, key='10')]])]]
 
     return wjugar
 
 
-def Jugando(sg, cantFilas, mayor, diccionario, conf, listayuda, tuplatam, visi):
+def Jugando(sg, cantFilas, mayor, diccionario, conf, listayuda, tuplatam, visi, colorback):
     """Esta funcion es la jugabilidad de la sopa de letras"""
-    colorInterfaz = definirColor(diccionario['oficina'])
-    windowJugando = [[sg.Text('Primero debes seleccionar el color de la palabra que vas a marcar (clickea sobre el color)')],
+    windowJugando = [[sg.Text('Primero debes seleccionar el color de la palabra que vas a marcar (clickea sobre el color)'),],
                      [sg.Text('Verbos'), sg.Text('', enable_events=True, click_submits=True, size=(5, 1),
                                                  background_color=conf['VB']['color'], key='VB'),
                       sg.Text('Sustantivos'),
                       sg.Text('', enable_events=True, size=(5, 1), background_color=conf['NN']['color'], key='NN'),
                       sg.Text('Adjetivos'),
                       sg.Text('', enable_events=True, size=(5, 1), key='JJ', background_color=conf['JJ']['color']),
-                      sg.ReadButton('Verificar', key='verificar'), sg.ReadButton('Ayudas', key='ayuda'),sg.ReadButton('Palabras', key='pals')],
+                      sg.ReadButton('Verificar', button_color=('white', '#191919'), key='verificar'),
+                      sg.ReadButton('Ayudas', button_color=('white', '#18171c'), key='ayuda'),sg.ReadButton('Palabras', button_color=('white', '#18171c'), key='pals')],
                      [sg.Graph(tuplatam, (0, tuplatam[1]), (tuplatam[0], 0), key='_GRAPH_', change_submits=True, drag_submits=False,
-                               background_color='white'), sg.Listbox(values=listayuda, background_color="#090470", font="Times", disabled=True,
+                               background_color=colorback), sg.Listbox(values=listayuda, background_color='#18171c', font="Times", disabled=True,
                           size=(50, len(listayuda)), visible=visi, key="lbox")],
-                     [sg.ReadButton('Salir', key='out')]]
+                     [sg.ReadButton('Salir', button_color=('white', '#18171c'),key='out')]]
     return windowJugando

@@ -76,19 +76,19 @@ def guardar_temp(dict,ubicacion):
     for key, value in dict():
         temp = [key, value]
         info.append(temp)
-    with open(os.path.join("archivos_texto", ubicacion+".json"), "r") as log_file:
+    with open(os.path.join("archivos_texto", "temperatura_"+ubicacion+".json"), "r") as log_file:
         try:
             lista_de_temperaturas = json.load(log_file)
         except Exception:
             # En caso de que el json no sea una lista
             lista_de_temperaturas = []
     lista_de_temperaturas.append(info)
-    with open(os.path.join("archivos_texto", ubicacion+".json"), "w") as log_file:
+    with open(os.path.join("archivos_texto", "temperatura_"+ubicacion+".json"), "w") as log_file:
         json.dump(lista_de_temperaturas, log_file, indent=4)
 
 
  if __name__ == "__main__":
-            ubi=input("ingrese la ubicacion donde se encuentra:")
+            ubi=str(input("ingrese el numero de oficina en el que esta:"))
             son=Sonido()
             temp = Temperatura()
             mat= Matriz()
